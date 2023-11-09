@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=xs-infopanel
+Comment=conky based on infopanel screenlet
+Exec=xs-infopanel.sh
+StartupNotify=false
