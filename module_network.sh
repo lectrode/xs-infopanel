@@ -24,7 +24,7 @@ msg(){ notify-send -i dialog-warning "new ext ip" "$@" ; }
 
 
 #begin public ip section
-if [[ "$getpublicip" = "yes" ]]; then
+while [[ "$getpublicip" = "yes" ]]; do
 
 
 typeset -A lastlocal
@@ -44,8 +44,12 @@ fi
 
 #get current local ip(s)
 while read -r l; do
+  [[ "$l" = "" ]] && continue
   currlocal["$(echo "$l"|cut -d' ' -f1)"]="$(echo "$l"|cut -d' ' -f3-)"
 done <<< "$(ip --brief addr|grep -Eiv '[^a-z0-9\.\:\/ ]'|grep -E '[a-z0-9]'|grep -Ev '(^lo | DOWN )'|sed -r 's/ +/ /g')"
+
+#skip if not online
+[[ "${!currlocal[@]}" = "" ]] && break
 
 #need new public ip if *all* local ip addresses changed
 #(checking all prevents needless re-checking of external ip if i.e. switching from wired to wireless)
@@ -84,11 +88,13 @@ fi
 #display public ip
 [[ "$pubip" = "" ]] && pubip="$pubip_last"
 [[ "$pubipdate" = "" ]] && pubipdate="$pubipdate_last"
+#pubip="12.34.56.78" #uncomment for demo ip address
 [[ "$pubip" = "" ]] || echo "\$template0Public IP: \${color}$pubip \${color1}(Updated: \${color}$pubipdate\${color1})"
 
 
 #end public ip section
-fi
+break
+done
 
 
 #display local adapter info
