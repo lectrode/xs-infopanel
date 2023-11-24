@@ -13,10 +13,24 @@ This config has scripts to automatically/dynamically detect the following:
   * last value cached to avoid spamming requests
   * only checks once every 24 hours or if all local IP addresses change
 
+## Screenshot
+![screenshot of v2.0.0](https://github.com/lectrode/xs-infopanel/blob/main/screenshots/v2.0.0.png?raw=true "v2.0.0")
+
+## Additional features
+* Bars and text change colors (white, yellow, red) based on usage
+  * cpu:     yellow (more than 85%), red (more than 90%)
+  * temp:    yellow (more than 70%), red (more than 85%)
+  * storage: yellow (more than 75%), red (more than 90%)
+* New network connection appears aqua until it has been cached
+  * (wait until cached before disconnecting previous connection to avoid re-checking external ip)
+  * (useful when switching between wired and wireless)
+
 ## Requirements
 * Tested on conky version 1.14.0+
 * Lua *not* required
 
-## Screenshot
-![screenshot of v2.0.0](https://github.com/lectrode/xs-infopanel/blob/main/screenshots/v2.0.0.png?raw=true "v2.0.0")
+
+## Usage
+* Run `xs-infopanel.sh` or execute the included desktop file
+
 
