@@ -16,7 +16,9 @@ checkpubevery="24" #maximum time in hours between public ip address checks
 #functions#
 ###########
 
-msg(){ notify-send -i dialog-warning "new ext ip" "$@" ; }
+msg_red(){ notify-send -t 0 -i dialog-error "xs-infopanel" "$@" ; }
+msg_yel(){ notify-send -t 0 -i dialog-warning "xs-infopanel" "$@" ; }
+msg_grn(){ notify-send -i emblem-default "xs-infopanel" "$@"; }
 
 ###########
 #  main   #
@@ -71,9 +73,11 @@ elif [[ ! "$pubipdate_last" = "" ]] && \
 if [[ "$needcheck" = "1" ]]; then
   pubip="$(curl -s 'http://myexternalip.com/raw'|grep -Eiv '[^a-z0-9\.\:\/]')"
   if [[ "$pubip" = "" ]]; then
-    msg "failed to get external ip"
+    msg_red "failed to get external ip"
   else pubipdate="$(date +'%F %H:%M')"
-    msg "new external ip: $pubip"
+    if [[ "$pubip" = "$pubip_last" ]]; then
+      msg_grn "external ip unchanged"
+    else msg_yel "new external ip: $pubip"; fi
   fi
 fi
 
@@ -113,14 +117,15 @@ done
 #display local adapter info
 for p in $(ls /sys/class/net); do
   [[ "$p" = "lo" ]] && continue
+  [[ ! "${!currlocal[@]}" = "" ]] && [[ "${currlocal[$p]}" = "" ]] && newcon="\${color4}"
   conn=d; [[ -d "/sys/class/net/$p/wireless" ]] && conn=b
   echo "\${if_up $p}"; echo "\$template0\${stippled_hr}"
-  echo "\$template0\${font ConkySymbols:size=16}$conn\${font} $p \${alignr}\${color}\${addr $p}"
+  echo "\$template0$newcon\${font ConkySymbols:size=16}$conn\${font}$newcon $p \${alignr}\${color}$newcon\${addr $p}"
   if [[ "$conn" = "b" ]]; then
     echo "\$template0SSID : \${color}\${wireless_essid $p} \${color1}\${alignr} \${color}\${wireless_link_qual_perc $p}% \${wireless_link_bar 7,100 $p}"
   fi
   echo -n "\$template0Speed: \${color}\${downspeed $p}\${color1}▼\${color} \${upspeed $p}\${color1}▲\${color}\${alignr}\${color1}Tot: \${color}\${totaldown $p}\${color1}▼\${color} \${totalup $p}\${color1}▲\${color0}\$endif"
-done
+unset newcon; done
 
 exit 0
 
