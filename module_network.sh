@@ -106,7 +106,7 @@ fi
 
 #display public ip
 #pubip="12.34.56.78" #uncomment for demo ip address
-[[ "$pubip" = "" ]] || echo -n "\$template0Public IP: \${color}$pubip \${color1}(Updated: \${color}$pubipdate\${color1})"
+[[ "$pubip" = "" ]] || echo -n "\$template0Public IP: \${color}$pubip \${color1}(Checked: \${color}$pubipdate\${color1})"
 
 
 #end public ip section
